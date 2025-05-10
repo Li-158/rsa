@@ -93,7 +93,7 @@ folder_list = [
 ]
 '''
 
-    # Load the fmri data name
+# Load the fmri data name
 file_list=[]
 for run in range(1,9):  # In this paradigm, it contain 8 run and 7 trial/run.
     for trial in range(1,8):
@@ -122,6 +122,8 @@ beh_data = beh_data.reshape(56,1,1)
 def rsa(bhv_data, fmri_data, ksize=[3,3,3], strides=[1, 1, 1], use_abs=False):
     '''
     Calcualte Representation smiliarity analysis based on fMRI data (searchlight)
+    
+    I don't use the permutation test. 
 
     Parameters
     ----------
@@ -150,6 +152,7 @@ def rsa(bhv_data, fmri_data, ksize=[3,3,3], strides=[1, 1, 1], use_abs=False):
     '''
     # Loading the behavior RDM
     bhv_rdm = bhvRDM(bhv_data)
+    bhv_rdm = bhv_rdm[0]
 
     # get the number of conditions, subjects and the size of the fMRI-img
     cons, nx, ny, nz = np.shape(fmri_data)
@@ -223,11 +226,26 @@ def rsa(bhv_data, fmri_data, ksize=[3,3,3], strides=[1, 1, 1], use_abs=False):
                 fmri_rdm = subrdms[x, y, z]
                 if not np.isnan(fmri_rdm).any():
                     # corrs[x, y, z] = rdm_correlation_pearson(bhv_rdm[0], fmri_rdm)
-                 
+                    # calculate the number of value above the diagonal in RDM
+                    n = int(cons*(cons-1/2))
+
+                    # initialize two vectors to store the values above the diagnal of two RDMs
+                    v1 = np.zeros([n])
+                    v2 = np.zeros([n])
+
+                    # assignment
+                    nn = 0
+                    for i in range(cons - 1):
+                        for j in range(cons -1 -i):
+                            v1[nn] = beh_rdm[i, i +j +1]
+                            v2[nn] = fmri_rdm[i, i +j +1]
+                            nn += 1
+                    
+                    # Calculate the Pearsonr Correlation
+                    corr[x, y, z] = np.array(pearsonr(v1, v2))
 
     print("\nRSA computing finished!")
     return corrs
-
 
 
 def save_rsa_nifti(corrs, reference_img_path, output_path, map_type="r"):
