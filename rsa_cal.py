@@ -81,7 +81,6 @@ def rsa(bhv_data, fmri_data, ksize=[3,3,3], strides=[1, 1, 1], use_abs=False):
                             for k3 in range(kz):
                                 # shape: [n_x, n_y, n_z, cons, kx*ky*kz], kx*ky*kz is the size of searchlight(27)
                                 data[x, y, z, i, index] = fmri_data[i, x*sx+k1, y*sy+k2, z*sz+k3]
-
                                 index = index + 1
 
     # initialize the RDMs
