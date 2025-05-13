@@ -9,7 +9,7 @@ from neurora.stuff import show_progressbar, limtozero
 from scipy.stats import pearsonr
 from scipy.stats import kendalltau
 from neurora.nii_save import corr_save_nii
-from rsa import rsa_cal
+from rsa_cal import rsa
 
 # Initialize path, name
 path = '/home/.bml/projects/03_decision-space-navigation/projects/03-08_decision-space-navigation-age-distance-est/data'
@@ -43,7 +43,7 @@ for name in folder_list:
     for file in file_list:
         img = nib.load(file)
         fdata = img.get_fdata()
-        fmri_data.append(fdata)
+        fmri_img.append(fdata)
 
     # reshape the data dimension to match the following function 
     fmri_data = np.stack(fmri_img, axis=0)
@@ -68,7 +68,7 @@ for name in folder_list:
     print(f'Starting analyzing: {name}')
     
     # Recall rsa function from rsa_cal.py
-    rsa_result = rsa_cal.rsa(bhv_data, fmri_data)
+    rsa_result = rsa(bhv_data, fmri_data)
 
     # Saving rsa result
     print(f'Save RSA result:{name}')

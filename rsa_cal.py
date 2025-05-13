@@ -93,7 +93,7 @@ def rsa(bhv_data, fmri_data, ksize=[3,3,3], strides=[1, 1, 1], use_abs=False):
     # to show the percent in 'show_progressbar' function
     total = n_x * n_y * n_z 
     
-    print(f'Finishing assignment:{name}')
+    print('Finishing assignment')
 
     # Generate the fMRI RDM
     for x in range(n_x):
